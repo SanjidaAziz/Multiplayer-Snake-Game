@@ -14,8 +14,9 @@ char background[]={"i\\ground3.bmp"};
 char blood[3][30]={"img\\blood.bmp","img\\blood2.bmp","img\\blood3.bmp"};
 char skyImage[20][30]={"img\\001.bmp","img\\002.bmp","img\\003.bmp","img\\004.bmp","img\\005.bmp","img\\006.bmp","img\\007.bmp","img\\008.bmp","img\\009.bmp","img\\010.bmp","img\\011.bmp","img\\012.bmp","img\\013.bmp","img\\014.bmp","img\\015.bmp","img\\016.bmp","img\\017.bmp","img\\018.bmp","img\\019.bmp","img\\020.bmp"};
 int imgpos[20];
-int mposx,mposy,i;
-int j;
+int bgimgpos[20];
+char bgImage[30][30]={"img\\b001.bmp","img\\b002.bmp","img\\b003.bmp","img\\b004.bmp","img\\b005.bmp","img\\b006.bmp","img\\b007.bmp","img\\b008.bmp","img\\b009.bmp","img\\b010.bmp","img\\b011.bmp","img\\b012.bmp","img\\b013.bmp","img\\b014.bmp","img\\b015.bmp","img\\b016.bmp","img\\b017.bmp","img\\b018.bmp","img\\b019.bmp","img\\b020.bmp","img\\b021.bmp","img\\b022.bmp","img\\b023.bmp","img\\b024.bmp","img\\b025.bmp","img\\b026.bmp","img\\b027.bmp","img\\b028.bmp","img\\b029.bmp","img\\b030.bmp"};
+
 int soundFlag=0;
 int scene=0;
 eDirection dir,dir2;
@@ -24,10 +25,14 @@ bool bigBut[4];
 
 void imgposf()
 {
-	int i,j;
+	int i,j,k;
 	for(i=0,j=0;i<20;i++){
 		imgpos[i]=j;
 		j+=35;
+	}
+	for(i=0,k=0;i<30;i++){		
+		bgimgpos[i]=k;
+		k+=30;
 	}
 }
 void skyRendering()
@@ -45,6 +50,25 @@ void skyRendering()
 			if(imgpos[i]<0)
 			{
 				imgpos[i]=665;
+			}
+		}
+}
+
+void backRendering() // menu page rendering
+{
+	for(int i=0;i<30;i++)
+		{
+			iShowBMP(bgimgpos[i],0,bgImage[i]);
+		}
+		for(int i=0;i<30;i++)
+		{
+			bgimgpos[i]-=30;
+		}
+		for(int i=0;i<30;i++)
+		{
+			if(bgimgpos[i]<0)
+			{
+				bgimgpos[i]=870;
 			}
 		}
 }
@@ -257,8 +281,8 @@ void iDraw()
 	{		
 		//The Menu Page
 
-		iShowBMP(0,0,"i\\2.bmp");
-
+		//iShowBMP(0,0,"i\\2.bmp");
+		backRendering();
 		for(int i=0;i<5;i++)
 		{
 			if(flagBut[i]==1) iShowBMP2(but[i].x-25,but[i].y,buttonBig[i],0);
@@ -270,14 +294,11 @@ void iDraw()
 		
 		if(soundFlag==1) 
 		{
-			//stopS();
 			if(bigBut[1]==true) iShowBMP2(825,535,"img\\mainSoundOffBig.bmp",0);
 			else iShowBMP2(830,540,"img\\mainSoundOff.bmp",0);
 		}
 		else if(soundFlag==0) 
 		{
-			//playS(sound);
-			//PlaySound("necessary\\2.wav",NULL,SND_ASYNC);
 			if(bigBut[1]==true) iShowBMP2(825,535,"img\\mainSoundOnBig.bmp",0);
 			else iShowBMP2(830,540,"img\\mainSoundOn.bmp",0);
 			
@@ -309,7 +330,8 @@ void iDraw()
 			}
 			else
 			{
-				iSetColor(241,251,31); //morning yellow
+				iSetColor(70,130,180); //light blue
+				//iSetColor(241,251,31); //morning yellow
 				iFilledEllipse(snake[i].x,snake[i].y,a,b); //snake1 body
 				iSetColor(0,0,0);
 				iPoint(snake[i].x+5,snake[i].y+1); //spot on skin
@@ -331,7 +353,8 @@ void iDraw()
 			}
 			else
 			{
-				iSetColor(10,222,29); //python green
+				iSetColor(100,100,100); //gray
+				//iSetColor(10,222,29); //python green
 				iFilledEllipse(snake2[i].x,snake2[i].y,a2,b2); //snake2 body
 				iSetColor(255,0,0);
 				iPoint(snake2[i].x+5,snake2[i].y+1);
@@ -356,7 +379,7 @@ void iDraw()
 		{
 			iText(350,450,"GAME OVER!!!",GLUT_BITMAP_TIMES_ROMAN_24);
 			iText(300,350,"Press 'SPACE' to continue",GLUT_BITMAP_TIMES_ROMAN_24);
-			if(winner==1) iShowBMP2(snake2X-26,snake2Y-26,blood[2],0); //blood effect
+			if(winner==1) iShowBMP2(snake2X-26,snake2Y-26,blood[2],0);
 			else if(winner==2) iShowBMP2(snakeX-26,snakeY-26,blood[2],0);
 						
 		}
@@ -366,9 +389,6 @@ void iDraw()
 		stopS();
 		gameLoadRead();
 		ball=0;
-		//iSetColor(220,0,0);
-		//iShowBMP(0,0,"necessary\\lb.bmp");
-		//iText(600, 600, "Press Space to back",GLUT_BITMAP_TIMES_ROMAN_24); 
 	}
 
 	else if(ball==2)
@@ -381,9 +401,8 @@ void iDraw()
 		iText(550, 50, "Press Space to back",GLUT_BITMAP_TIMES_ROMAN_24);
 
 		iSetColor(230,230,250);
-		iFilledRectangle(415,345,250,250);
+		iFilledRectangle(405,345,255,250);
 		iSetColor(0,0,0);
-		
 		int x=425,y=550;
 		for(int i=0;i<3;i++)
 		{		
@@ -486,7 +505,6 @@ void iDraw()
 			iShowBMP2(0,200,"img\\snake.bmp",0);
 			iShowBMP2(550,200,"img\\scroll6.bmp",0);
 		}
-		//iShowBMP2(550,200,"img\\mainScroll.bmp",0);
 		if(bigBut[2]==true) iShowBMP2(740,120,"img\\mainNextPageBig.bmp",0);
 		else iShowBMP2(745,125,"img\\mainNextPage.bmp",0);
 
@@ -557,6 +575,7 @@ void iMouse(int button, int state, int mx, int my)
 			if(mx>=835 && mx<=835+60 && my>=630 && my<=630+60)
 			{
 				ball=6;
+				scene=0;
 				if(scene==0) PlaySound("Sound\\page1.wav",NULL,SND_ASYNC);
 			}
 			if(mx>=835 && mx<=835+60 && my>=540 && my<=540+60)
@@ -566,7 +585,6 @@ void iMouse(int button, int state, int mx, int my)
 				{
 					soundFlag=0;
 					PlaySound(sound,NULL,SND_LOOP | SND_ASYNC);
-					//PlaySound(sound,NULL,SND_LOOP | SND_ASYNC);
 				}
 			}
 		}
@@ -578,6 +596,7 @@ void iMouse(int button, int state, int mx, int my)
 		if (ball==6)
 		{
 			
+			//PlaySound("Sound\\page1.wav",NULL,SND_LOOP | SND_ASYNC);
 			if(scene>=0 && scene<=6)
 			//while(scene<=0 && scene>=3)
 			{
@@ -740,7 +759,7 @@ void iKeyboard(unsigned char key)
 */
 void iSpecialKeyboard(unsigned char key)
 {
-	if(key==GLUT_KEY_HOME && pause==true) {ball=-1; initials();}//when the running game is paused, 
+	if(key==GLUT_KEY_HOME && pause==true) {ball=-1; initials();PlaySound(sound,NULL,SND_LOOP | SND_ASYNC);}//when the running game is paused, 
 												   //pressing the home button will shift to the main menu.
 											   	   //To resume, simply press 'space'.
 
